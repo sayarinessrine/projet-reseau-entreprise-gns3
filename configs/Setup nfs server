@@ -1,0 +1,17 @@
+#!/bin/bash
+# Configuration du serveur NFS sur Ubuntu-Server (departement Serveur)
+# Partage accessible depuis le reseau Client 192.168.0.0/21
+
+sudo apt install -y nfs-kernel-server
+sudo mkdir -p /srv/nfs/partage
+sudo chown nobody:nogroup /srv/nfs/partage
+sudo chmod 777 /srv/nfs/partage
+
+echo "/srv/nfs/partage 192.168.0.0/21(rw,sync,no_subtree_check,no_root_squash)" | sudo tee /etc/exports
+
+sudo exportfs -ra
+sudo systemctl restart nfs-kernel-server
+sudo systemctl enable nfs-kernel-server
+
+echo "Verification :"
+sudo exportfs -v
