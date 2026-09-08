@@ -1,0 +1,30 @@
+! =========================================
+! R2 - Backbone (connecté à R1, R3, RC)
+! =========================================
+
+enable
+configure terminal
+
+interface FastEthernet0/0
+ ip address 192.168.8.130 255.255.255.252
+ no shutdown
+ exit
+
+interface FastEthernet1/0
+ ip address 192.168.8.137 255.255.255.252
+ no shutdown
+ exit
+
+interface FastEthernet2/0
+ ip address 192.168.8.145 255.255.255.252
+ no shutdown
+ exit
+
+router ospf 1
+ network 192.168.8.128 0.0.0.3 area 0
+ network 192.168.8.136 0.0.0.3 area 0
+ network 192.168.8.144 0.0.0.3 area 0
+ exit
+
+end
+write memory
