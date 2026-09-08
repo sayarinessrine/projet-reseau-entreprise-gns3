@@ -1,1 +1,43 @@
 
+! =========================================
+! RC - Routeur département Client
+! =========================================
+
+enable
+configure terminal
+
+interface FastEthernet1/0
+ ip address 192.168.0.1 255.255.248.0
+ no shutdown
+ exit
+
+interface FastEthernet0/0
+ ip address 192.168.8.146 255.255.255.252
+ no shutdown
+ exit
+
+router ospf 1
+ network 192.168.8.144 0.0.0.3 area 0
+ network 192.168.0.0 0.0.7.255 area 0
+ exit
+
+ip dhcp excluded-address 192.168.0.1 192.168.0.10
+ip dhcp pool POOL-CLIENT
+ network 192.168.0.0 255.255.248.0
+ default-router 192.168.0.1
+ dns-server 8.8.8.8
+ exit
+
+interface FastEthernet1/0
+ ip nat inside
+ exit
+interface FastEthernet0/0
+ ip nat outside
+ exit
+
+access-list 100 deny ip 192.168.0.0 0.0.127.255 192.168.0.0 0.0.127.255
+access-list 100 permit ip 192.168.0.0 0.0.7.255 any
+ip nat inside source list 100 interface FastEthernet0/0 overload
+
+end
+write memory
