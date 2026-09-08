@@ -1,0 +1,57 @@
+! =========================================
+! RS - Routeur département Serveur (NFS)
+! =========================================
+
+enable
+configure terminal
+
+interface FastEthernet0/0
+ ip address 192.168.8.149 255.255.255.252
+ no shutdown
+ exit
+
+interface FastEthernet1/0
+ ip address 192.168.8.1 255.255.255.128
+ no shutdown
+ exit
+
+router ospf 1
+ network 192.168.8.148 0.0.0.3 area 0
+ network 192.168.8.0 0.0.0.127 area 0
+ exit
+
+ip dhcp excluded-address 192.168.8.1 192.168.8.10
+ip dhcp pool POOL-SERVEUR
+ network 192.168.8.0 255.255.255.128
+ default-router 192.168.8.1
+ dns-server 8.8.8.8
+ exit
+
+interface FastEthernet1/0
+ ip nat inside
+ exit
+interface FastEthernet0/0
+ ip nat outside
+ exit
+
+access-list 100 deny ip 192.168.0.0 0.0.127.255 192.168.0.0 0.0.127.255
+access-list 100 permit ip 192.168.8.0 0.0.0.127 any
+ip nat inside source list 100 interface FastEthernet0/0 overload
+
+! ACL de sécurité protégeant le serveur NFS
+ip access-list extended PROTECT-SERVEUR
+ permit icmp 192.168.0.0 0.0.7.255 192.168.8.0 0.0.0.127
+ permit tcp 192.168.0.0 0.0.7.255 192.168.8.0 0.0.0.127 eq 2049
+ permit udp 192.168.0.0 0.0.7.255 192.168.8.0 0.0.0.127 eq 2049
+ permit tcp 192.168.0.0 0.0.7.255 192.168.8.0 0.0.0.127 eq sunrpc
+ permit udp 192.168.0.0 0.0.7.255 192.168.8.0 0.0.0.127 eq sunrpc
+ permit ospf any any
+ deny ip any 192.168.8.0 0.0.0.127
+ permit ip any any
+
+interface FastEthernet0/0
+ ip access-group PROTECT-SERVEUR in
+ exit
+
+end
+write memory
