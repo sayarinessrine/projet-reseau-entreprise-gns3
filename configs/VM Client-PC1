@@ -1,0 +1,15 @@
+# /etc/netplan/50-cloud-init.yaml
+# VM Client-PC1 (VirtualBox) - IP dynamique via DHCP + priorité de route permanente
+#
+# enp0s3 = Adaptateur 1 (NAT, accès Internet de la VM elle-même)
+# enp0s8 = Adaptateur 2 (Host-Only, branché sur Cloud2 -> RC dans GNS3)
+
+network:
+  version: 2
+  ethernets:
+    enp0s3:
+      dhcp4: true
+    enp0s8:
+      dhcp4: true
+      dhcp4-overrides:
+        route-metric: 50
