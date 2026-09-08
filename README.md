@@ -36,7 +36,7 @@ Simuler l'infrastructure réseau d'une entreprise avec architecture Client-Serve
 
 ## Documentation complète
 
-Voir le fichier [Explication-Complete-Projet-TechSolutions.docx](./Explication-Complete-Projet-TechSolutions.docx) pour le détail complet des configurations et des tests.
+Le dossier [`configs/`](./configs) contient les fichiers de configuration individuels de chaque équipement (routeurs Cisco et fichiers Netplan des VM).
 
 ## Contexte
 
